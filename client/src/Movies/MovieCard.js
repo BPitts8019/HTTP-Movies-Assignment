@@ -1,5 +1,9 @@
 import React from 'react';
 
+/*
+Error in stars.map()
+If value in the array is null or 0 length, then it will return an error
+*/
 const MovieCard = props => {
   const { title, director, metascore, stars } = props.movie;
   return (
@@ -13,7 +17,7 @@ const MovieCard = props => {
       </div>
       <h3>Actors</h3>
 
-      {stars.map(star => (
+      {(stars && stars.length > 0) && stars.map(star => (
         <div key={star} className="movie-star">
           {star}
         </div>
