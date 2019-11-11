@@ -16,7 +16,7 @@ value.split(",")
 */
 
 
-function MovieUpdate({match:{params:{id}}}) {
+function MovieUpdate({match:{params:{id}}, history}) {
    const [movie, setMovie] = useState({
       id: -1,
       title: "",
@@ -38,10 +38,13 @@ function MovieUpdate({match:{params:{id}}}) {
 
    const handleChange = event => {
       let value = event.target.value;
+      if (Number.isNaN(value)) {
+         console.log(Number(value));
+      }
 
       setMovie({
          ...movie,
-         [event.target.name]: Number.isNaN(value)? value : Number(value)
+         [event.target.name]: value
       });
    }
 
@@ -54,12 +57,25 @@ function MovieUpdate({match:{params:{id}}}) {
       });
    }
 
+   const updateMove = event => {
+      event.preventDefault();
+
+      axios
+         .put(`http://localhost:5000/api/movies/${movie.id}`, movie)
+         .then(response => {
+            history.push(`/movies/${id}`);
+         })
+         .catch(err => {
+            console.error(err.response);
+         })
+   };
+
    return (
       <div>
          {
             (movie.id >= 0)
             ?  (
-               <form onSubmit={null}>
+               <form onSubmit={updateMove}>
                   <input type="text" name="title" placeholder="Title" value={movie.title} onChange={handleChange} />
                   <input type="text" name="director" placeholder="Director" value={movie.director} onChange={handleChange} />
                   <input type="number" name="metascore" placeholder="Metascore" value={movie.metascore} onChange={handleChange} />
